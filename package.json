@@ -1,0 +1,22 @@
+{
+  "name": "review-materi",
+  "version": "1.0.0",
+  "description": "review backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "backend",
+    "nodejs",
+    "expressjs"
+  ],
+  "author": "jamalfazlur",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "mysql": "github:mysqljs/mysql"
+  }
+}
