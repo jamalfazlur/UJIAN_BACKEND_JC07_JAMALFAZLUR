@@ -28,7 +28,17 @@ app.get('/', (req,res) => {
 // ------------------- GET ALL MOVIES ---------------------------------------------------
 app.get('/getmovies', (req,res) => {
     
-    var sql = `SELECT * FROM movies`;
+    var sql = `SELECT M.id AS 'ID Movie',  
+                M.nama AS 'Nama Movie',
+                M.tahun AS 'Tahun',
+                M.description AS 'Deskripsi',
+                C.id AS 'ID Kategori',
+                C.nama AS 'Kategori'
+                FROM movcat MC
+                JOIN categories C
+                ON MC.idcategory = C.id 
+                RIGHT JOIN movies M 
+                ON MC.idmovie = M.id;`;
 
     conn.query(sql, (err, result) => {
         if (err) throw err; 
@@ -71,6 +81,7 @@ app.post('/addmovie', (req,res) => {
 
     conn.query(sql, (err, result) => {
     if(err) throw err;
+    console.log("Add Movie: SUCCESS !")
     res.send(result);
     })
 })
@@ -119,7 +130,7 @@ app.post('/updatemovie/:id', (req, res) => {
 
             conn.query(sql, (err1, result1) => {
                 if(err1) throw err1;
-                console.log('Update success');
+                console.log('Update Success');
                 res.send(result1);
             })
         }
@@ -157,6 +168,7 @@ app.post('/addcategory', (req,res) => {
 
     conn.query(sql, (err, result) => {
     if(err) throw err;
+    console.log("Add Category Success !")
     res.send(result);
     })
 })
@@ -241,11 +253,28 @@ app.post('/addrelation', (req,res) => {
 
     conn.query(sql, (err, result) => {
     if(err) throw err;
+    console.log("Add Relation Success !")
     res.send(result);
     })
 })
 
-// ------------------------------ DELETE RELATION (USE BODY) ------------------------------------------------
+// ----------------------------- ADD RELATION : MOVIE <> CATEGORY (BY NAME) ------------------------------------
+app.post('/addrelationbyname', (req,res) => {
+
+    var { movieName, categoryName } = req.body;
+
+    var sql =   `INSERT INTO movcat VALUES 
+                ((SELECT id FROM movies WHERE nama LIKE '%${movieName}%'), 
+                (SELECT id FROM categories WHERE nama LIKE '%${categoryName}%'));`;
+
+    conn.query(sql, (err, result) => {
+    if(err) throw err;
+    console.log("Add Relation Success !")
+    res.send(result);
+    })
+})
+
+// ------------------------------ DELETE RELATION (BY ID) ------------------------------------------------
 app.delete('/deleterelation', (req,res) => {
     var {idmovie, idcategory} = req.body;
 
@@ -253,11 +282,28 @@ app.delete('/deleterelation', (req,res) => {
 
     conn.query(sql, (err, result) => {
         if(err) throw err;
+        console.log("Delete Relation (by ID) Success !")
         res.send(result);
     })
 
 })
+// ------------------------------ DELETE RELATION (BY NAME) ------------------------------------------------
+app.delete('/deleterelationbyname', (req,res) => {
+    var {movieName, categoryName} = req.body;
 
+
+    sql =  `DELETE movcat FROM movcat
+            JOIN movies ON movcat.idmovie = movies.id
+            JOIN categories ON movcat.idcategory = categories.id
+            WHERE movies.nama LIKE '%${movieName}%' AND categories.nama LIKE '%${categoryName}%' ;`;
+
+    conn.query(sql, (err, result) => {
+        if(err) throw err;
+        console.log("Delete Relation (by Name) Success !")
+        res.send(result);
+    })
+
+})
 
 app.listen(port, () => console.log('API Aktif di port ' + port
                                     + '\nhttp://localhost:' + port))

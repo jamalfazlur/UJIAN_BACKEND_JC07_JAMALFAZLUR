@@ -1,0 +1,39 @@
+CREATE DATABASE IF NOT EXISTS `moviebertasbih`;
+
+
+
+USE `moviebertasbih`;
+
+
+
+CREATE TABLE `moviebertasbih`.`movies` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nama` VARCHAR(45) NOT NULL,
+  `tahun` INT NOT NULL,
+  `description` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`));
+
+
+
+-- DESC movies;
+
+
+
+CREATE TABLE `moviebertasbih`.`categories` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nama` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`));
+
+
+
+-- DESC categories;
+
+
+
+CREATE TABLE `moviebertasbih`.`movcat` (
+  `idmovie` INT NOT NULL,
+  `idcategory` INT NOT NULL);
+
+
+
+-- DESC movcat;
